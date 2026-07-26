@@ -1,0 +1,59 @@
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+
+// 归并排序
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        if (head == nullptr || head->next == nullptr) return head;
+
+        ListNode *slow = head;
+        ListNode *fast = head->next;
+
+        while (fast != nullptr && fast->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        ListNode *rightHead = slow->next;
+        // 分开前半和后半链表
+        slow->next = nullptr;
+
+        // 递归排序左右两半
+        ListNode *left = sortList(head);
+        ListNode *right = sortList(rightHead);
+
+        // 合并两个有序链表
+        return mergeTwoLists(left, right);
+    }
+
+private:
+    // 合并两个有序链表
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode *dummy = new ListNode();
+        ListNode *curr = dummy;
+
+        while (list1 != nullptr && list2 != nullptr) {
+            if (list1->val <= list2->val) {
+                curr->next = list1;
+                list1 = list1->next;
+            } else {
+                curr->next = list2;
+                list2 = list2->next;
+            }
+            curr = curr->next;
+        }
+        if (list1 != nullptr) curr->next = list1;
+        if (list2 != nullptr) curr->next = list2;
+
+        ListNode *newNode = dummy->next;
+        delete dummy;
+        return newNode;
+    }
+};
