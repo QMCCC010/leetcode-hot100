@@ -1,39 +1,43 @@
-#include <stack>
 #include <string>
-#include <algorithm>
 #include <cctype>
 using namespace std;
 
 class Solution {
 public:
     string decodeString(string s) {
-        string result;
-        stack<int> mult;
-        stack<char> st;
+        int pos = 0;
+        return recurStr(s, pos);
+    }
 
-        for (char c : s) {
-            if (isdigit(c)) mult.push((int)c);
-            else if (c == '[' || isalpha(c)) st.push(c);
-            else {
-                string temp;
-                while (st.top() != '[') {
-                    temp += st.top();
-                    st.pop();
+    string recurStr(string s, int& pos) {
+        string result;
+        int len = s.size();
+
+        while (pos < len && s[pos] != ']') {
+            if (isalpha(s[pos])) {
+                result += s[pos];
+                pos++;
+            }
+            else if (isdigit(s[pos])) {
+                int counts = 0;
+                while (pos < len && isdigit(s[pos])) {
+                    counts = 10*counts + (s[pos] - '0');
+                    pos++;
                 }
-                st.pop();
-                int iters = mult.top();
-                mult.pop();
-                int len = temp.size();
-                for (int i = len - 1; i >= 0; i--) {
-                    for (char c : temp) st.push(c);
-                }
+
+                // 跳过'['
+                pos++;
+
+                // 寻找内层子串
+                string innerStr = recurStr(s, pos);
+
+                // 跳过']'
+                pos++;
+
+                // 循环拼接
+                for (int i = 0; i < counts; i++) result += innerStr;
             }
         }
-        while (!st.empty()) {
-            result += st.top();
-            st.pop();
-        }
-        reverse(result.begin(), result.end());
         return result;
     }
 };
