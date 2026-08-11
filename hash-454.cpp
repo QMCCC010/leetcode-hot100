@@ -28,3 +28,23 @@ public:
         return result;
     }
 };
+
+// 单哈希表
+class Solution {
+public:
+    int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4) {
+        int result = 0;
+        unordered_map<int, int> mp;
+
+        for (int x : nums1) {
+            for (int y : nums2)
+                mp[x + y]++;
+        }
+
+        for (int x : nums3) {
+            for (int y : nums4) 
+                result += mp[-x-y];
+        }
+        return result;
+    }
+};
