@@ -31,31 +31,28 @@ public:
 class Solution {
 public:
     string reverseWords(string s) {
-        int len = s.size();
+        int n = s.size();
         // 反转整个字符串
-        reverse(s, 0, len - 1);
+        reverse(s, 0, n - 1);
 
-        int startIdx = 0, endIdx = len - 1;
-        while (startIdx < endIdx) {
-            if (s[startIdx] != ' ' && s[endIdx] != ' ') break;
-            if (s[startIdx] == ' ') startIdx++;
-            if (s[endIdx] == ' ') endIdx--;
-        }
-        // 反转每个单词
-        int start = startIdx, end = start;
-        while (end <= endIdx) {
-            if (s[end] == ' ') {
-                reverse(s, start, end - 1);
-                start = end;
-                while (s[end] == ' ') end++;
-                s.erase(start + 1, end - start - 1);
-                end = ++start;
-                endIdx -= end - start - 1;
+        int slow = 0, fast = 0;
+        while (fast < n) {
+            // 当fast指针找到一个单词
+            if (s[fast] != ' ') {
+                // 如果不是第一个单词，需要在单词之间添加一个空格
+                if (slow != 0) s[slow++] = ' ';
+
+                int start = slow;
+                while (fast < n && s[fast] != ' ') {
+                    // 从slow处开始填写fast扫描到的单词
+                    s[slow++] = s[fast++];
+                }
+                // 扫描结束反转该单词
+                reverse(s, start, slow - 1);
             }
-            else end++;
+            else fast++;
         }
-        reverse(s, start, endIdx);
-
+        s.resize(slow);
         return s;
     }
 
