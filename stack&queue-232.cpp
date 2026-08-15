@@ -1,6 +1,8 @@
 #include <stack>
 using namespace std;
 
+
+// 栈实现队列
 class MyQueue {
 private:
     stack<int> stack1;
